@@ -1,33 +1,43 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Wedding Invitation</title>
 </head>
 <body>
 
-  <!-- Embedded Styles directly in body to force browser rendering -->
+  <!-- Embedded Styles -->
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Montserrat:wght@300;400;500&display=swap');
 
     :root {
-      --primary-rose: #c46d73;
-      --secondary-gold: #d4af37;
-      --text-gray: #555;
-      --bg-cream: #fdfbf7;
-      --sage-green: #8c9b84;
+      /* Rose Gold Color Palette */
+      --rose-gold-dark: #b76e79;
+      --rose-gold-light: #e0bfb8;
+      --accent-gold: #c5a059;
+      --bg-blush: #fdfaf9;
+      --text-dark: #4a3b3c;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Playfair Display', serif;
-      background-color: var(--bg-cream);
-      color: var(--text-gray);
+      background-color: var(--bg-blush);
+      color: var(--text-dark);
       overflow-x: hidden;
       text-align: center;
+    }
+
+    /* Scratch Canvas Overlay */
+    #scratch-pad {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 9999;
+      cursor: crosshair;
+      transition: opacity 1.2s ease-in-out;
     }
 
     #petal-container {
@@ -40,14 +50,14 @@
       position: absolute;
       background-color: #ffb7c5;
       border-radius: 150% 0 150% 150%;
-      opacity: 0.7;
+      opacity: 0.6;
       animation: fall linear infinite;
     }
 
     @keyframes fall {
       0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
-      10% { opacity: 0.7; }
-      90% { opacity: 0.7; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.6; }
       100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
     }
 
@@ -55,31 +65,31 @@
       position: fixed;
       bottom: 20px; right: 20px;
       z-index: 100; background: white;
-      border: 1px solid var(--primary-rose);
+      border: 1px solid var(--rose-gold-light);
       padding: 10px; border-radius: 50%;
-      cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      cursor: pointer; box-shadow: 0 4px 10px rgba(183, 110, 121, 0.2);
     }
 
     .hero {
       padding: 80px 20px;
-      background: linear-gradient(135deg, #fdfbf7 0%, #eef5ee 100%);
+      background: linear-gradient(135deg, #fdfaf9 0%, #f7ebe8 100%);
       min-height: 100vh;
       display: flex; flex-direction: column; justify-content: center;
     }
 
     .subtitle {
       font-family: 'Montserrat', sans-serif;
-      color: var(--sage-green); font-size: 0.9rem;
+      color: var(--accent-gold); font-size: 0.9rem;
       letter-spacing: 4px; text-transform: uppercase; margin-bottom: 15px;
     }
 
     .names {
-      color: var(--primary-rose); font-size: 3.5rem;
+      color: var(--rose-gold-dark); font-size: 3.8rem;
       font-weight: 600; font-style: italic; margin-bottom: 10px;
     }
 
     .main-date {
-      font-size: 1.4rem; color: var(--text-gray); letter-spacing: 1px;
+      font-size: 1.4rem; color: var(--text-dark); letter-spacing: 1px;
     }
 
     .countdown-wrapper {
@@ -87,23 +97,24 @@
     }
 
     .countdown-box {
-      background: rgba(255, 255, 255, 0.8);
-      border: 1px solid rgba(196, 109, 115, 0.3);
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid var(--rose-gold-light);
       border-radius: 8px; padding: 15px; min-width: 75px;
+      box-shadow: 0 4px 10px rgba(183, 110, 121, 0.08);
     }
 
     .countdown-box .number {
-      font-size: 2rem; color: var(--primary-rose); font-weight: 600;
+      font-size: 2rem; color: var(--rose-gold-dark); font-weight: 600;
     }
 
     .countdown-box .label {
       font-family: 'Montserrat', sans-serif; font-size: 0.65rem;
-      color: var(--sage-green); letter-spacing: 1px;
+      color: var(--accent-gold); letter-spacing: 1px;
     }
 
     .events-section { padding: 60px 20px; background: #fff; }
     .section-title {
-      font-size: 2.5rem; color: var(--primary-rose);
+      font-size: 2.5rem; color: var(--rose-gold-dark);
       margin-bottom: 40px; font-style: italic;
     }
 
@@ -113,26 +124,51 @@
     }
 
     .event-card {
-      background: var(--bg-cream); border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      overflow: hidden; width: 300px; text-align: left;
+      background: var(--bg-blush); border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(183, 110, 121, 0.1);
+      overflow: hidden; width: 320px; text-align: left;
+      border: 1px solid rgba(224, 191, 184, 0.4);
     }
 
     .event-img {
-      width: 100%; height: 200px; display: flex; align-items: center; 
-      justify-content: center; color: #aaa; background: #e2e2e2;
+      width: 100%; height: 220px; object-fit: cover;
     }
 
-    .event-details { padding: 20px; }
-    .event-name { color: var(--primary-rose); font-size: 1.5rem; margin-bottom: 10px; }
-    .event-time { font-family: 'Montserrat', sans-serif; font-size: 0.85rem; margin-bottom: 8px; color: #777; }
+    .event-details { padding: 25px; }
+    .event-name { color: var(--rose-gold-dark); font-size: 1.6rem; margin-bottom: 10px; }
+    .event-time { font-family: 'Montserrat', sans-serif; font-size: 0.85rem; margin-bottom: 12px; color: #777; }
 
-    .map-section { padding: 60px 20px; background: var(--bg-cream); }
+    .map-section { padding: 60px 20px; background: var(--bg-blush); }
     .map-container {
-      max-width: 800px; margin: 0 auto; border-radius: 12px;
-      overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      max-width: 800px; margin: 0 auto 25px auto; border-radius: 12px;
+      overflow: hidden; box-shadow: 0 4px 15px rgba(183, 110, 121, 0.1);
+      border: 1px solid var(--rose-gold-light);
     }
+
+    .map-button {
+      display: inline-block;
+      background-color: var(--rose-gold-dark);
+      color: white;
+      text-decoration: none;
+      padding: 12px 30px;
+      border-radius: 25px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      letter-spacing: 1px;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 4px 10px rgba(183, 110, 121, 0.4);
+    }
+
+    .map-button:hover {
+      background-color: #9a5a64;
+    }
+    
+    /* Prevent body scroll while scratching on mobile */
+    .no-scroll { overflow: hidden; }
   </style>
+
+  <!-- Scratch Overlay Canvas -->
+  <canvas id="scratch-pad"></canvas>
 
   <div id="petal-container"></div>
 
@@ -146,7 +182,7 @@
   <section class="hero">
     <p class="subtitle">The Wedding Invitation Of</p>
     <h1 class="names">Raj & Apeksha</h1>
-    <p class="main-date">Dec 7th, 2026</p>
+    <p class="main-date">December 7, 2026</p>
 
     <!-- Countdown Timer Feature -->
     <div class="countdown-wrapper">
@@ -164,7 +200,8 @@
       
       <!-- Event Item 1 -->
       <div class="event-card">
-        <div class="event-img">[ Sangeet Caricature ]</div>
+        <!-- Sample Sangeet Image -->
+        <img class="event-img" src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Sangeet Ceremony">
         <div class="event-details">
           <h3 class="event-name">Sangeet Ceremony</h3>
           <p class="event-time">📅 Dec 6, 2026 | 06:00 PM onwards</p>
@@ -174,7 +211,8 @@
 
       <!-- Event Item 2 -->
       <div class="event-card">
-        <div class="event-img">[ Wedding Caricature ]</div>
+        <!-- Sample Wedding Image -->
+        <img class="event-img" src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="The Wedding">
         <div class="event-details">
           <h3 class="event-name">The Wedding (Varmala)</h3>
           <p class="event-time">📅 Dec 7, 2026 | 07:00 PM onwards</p>
@@ -188,38 +226,149 @@
   <!-- Integrated Venue Location Map -->
   <section class="map-section">
     <h2 class="section-title">Where We Celebrate</h2>
-    <div class="map-container"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4846.331420744778!2d85.0498763659054!3d25.614150462001454!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ed56454ecce6d7%3A0x101c597d1c7524b6!2sMandap!5e0!3m2!1sen!2sin!4v1781252931607!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <div class="map-container">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4846.331420744778!2d85.0498763659054!3d25.614150462001454!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ed56454ecce6d7%3A0x101c597d1c7524b6!2sMandap!5e0!3m2!1sen!2sin!4v1781252931607!5m2!1sen!2sin" 
+              width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
+    
+    <a href="https://maps.app.goo.gl/fLsvvVkNr1jPTeTb6?g_st=ac" target="_blank" class="map-button">Open in Google Maps</a>
   </section>
 
   <script>
-    // Countdown Engine
+    // --- SCRATCH TO REVEAL LOGIC ---
+    const canvas = document.getElementById('scratch-pad');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let scratchedPixels = 0;
+    let isRevealed = false;
+
+    // Lock scrolling while canvas is active
+    document.body.classList.add('no-scroll');
+
+    function initCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      // Draw Rose Gold Base
+      let gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      gradient.addColorStop(0, '#e0bfb8'); // Light Rose Gold
+      gradient.addColorStop(1, '#b76e79'); // Dark Rose Gold
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Add "Scratch Here" Text
+      ctx.font = "italic 600 35px 'Playfair Display'";
+      ctx.fillStyle = "#ffffff";
+      ctx.textAlign = "center";
+      ctx.fillText("Scratch to Reveal", canvas.width / 2, canvas.height / 2 - 20);
+      
+      ctx.font = "300 16px 'Montserrat'";
+      ctx.fillText("Our Web Invitation", canvas.width / 2, canvas.height / 2 + 20);
+    }
+
+    initCanvas();
+    window.addEventListener('resize', () => { if(!isRevealed) initCanvas(); });
+
+    function getMousePos(evt) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = evt.clientX || (evt.touches && evt.touches[0].clientX);
+      const clientY = evt.clientY || (evt.touches && evt.touches[0].clientY);
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function startPosition(e) {
+      if(isRevealed) return;
+      isDrawing = true;
+      scratch(e);
+      // Auto-play music on first interaction
+      const music = document.getElementById("bg-music");
+      if(music.paused) { music.play(); document.getElementById("audio-icon").innerText = "⏸️"; }
+    }
+
+    function endPosition() {
+      isDrawing = false;
+      ctx.beginPath();
+      checkRevealCompletion();
+    }
+
+    function scratch(e) {
+      if (!isDrawing || isRevealed) return;
+      e.preventDefault(); 
+      const pos = getMousePos(e);
+      
+      ctx.lineWidth = 60; // Size of the scratch eraser
+      ctx.lineCap = 'round';
+      ctx.globalCompositeOperation = 'destination-out';
+      
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+    }
+
+    function checkRevealCompletion() {
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const pixels = imageData.data;
+      let transparentPixels = 0;
+      
+      // Check every 16th pixel to save performance
+      for (let i = 3; i < pixels.length; i += 64) { 
+        if (pixels[i] === 0) transparentPixels++;
+      }
+      
+      const totalSampled = pixels.length / 64;
+      const percentageScratched = (transparentPixels / totalSampled) * 100;
+
+      // If more than 35% is scratched, fade out and remove canvas
+      if (percentageScratched > 35) {
+        isRevealed = true;
+        canvas.style.opacity = '0';
+        document.body.classList.remove('no-scroll'); // Unlock scrolling
+        setTimeout(() => canvas.remove(), 1200);
+      }
+    }
+
+    // Event Listeners for Mouse
+    canvas.addEventListener('mousedown', startPosition);
+    canvas.addEventListener('mouseup', endPosition);
+    canvas.addEventListener('mousemove', scratch);
+    // Event Listeners for Touch (Mobile)
+    canvas.addEventListener('touchstart', startPosition, { passive: false });
+    canvas.addEventListener('touchend', endPosition);
+    canvas.addEventListener('touchmove', scratch, { passive: false });
+
+
+    // --- COUNTDOWN ENGINE ---
     const targetDate = new Date("Dec 7, 2026 19:00:00").getTime();
     setInterval(() => {
       const now = new Date().getTime();
       const difference = targetDate - now;
-
-      document.getElementById("days").innerText = String(Math.floor(difference / (1000 * 60 * 60 * 24))).padStart(2, '0');
-      document.getElementById("hours").innerText = String(Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
-      document.getElementById("minutes").innerText = String(Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-      document.getElementById("seconds").innerText = String(Math.floor((difference % (1000 * 60)) / 1000)).padStart(2, '0');
+      if (difference > 0) {
+        document.getElementById("days").innerText = String(Math.floor(difference / (1000 * 60 * 60 * 24))).padStart(2, '0');
+        document.getElementById("hours").innerText = String(Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+        document.getElementById("minutes").innerText = String(Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+        document.getElementById("seconds").innerText = String(Math.floor((difference % (1000 * 60)) / 1000)).padStart(2, '0');
+      }
     }, 1000);
 
-    // Falling Petals Generator
+
+    // --- FALLING PETALS GENERATOR ---
     const container = document.getElementById('petal-container');
     function createPetal() {
       const petal = document.createElement('div');
       petal.classList.add('petal');
       petal.style.left = Math.random() * 100 + 'vw';
-      petal.style.animationDuration = Math.random() * 3 + 2 + 's';
-      petal.style.width = Math.random() * 10 + 10 + 'px';
+      petal.style.animationDuration = Math.random() * 3 + 3 + 's'; 
+      petal.style.width = Math.random() * 8 + 8 + 'px';
       petal.style.height = petal.style.width;
+      petal.style.backgroundColor = Math.random() > 0.5 ? '#e0bfb8' : '#fcf8f7'; 
       container.appendChild(petal);
-      setTimeout(() => petal.remove(), 5000);
+      setTimeout(() => petal.remove(), 6000);
     }
-    setInterval(createPetal, 300);
+    setInterval(createPetal, 400);
 
-    // Audio Controller Toggle
+
+    // --- AUDIO TOGGLE ---
     function toggleMusic() {
       const music = document.getElementById("bg-music");
       const icon = document.getElementById("audio-icon");
